@@ -28,7 +28,7 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("HEEEEEEEEEEEEEEELLLLLLLLLLLLLOOOOOOOOOOOOOOOO");
+		logger.info("! ! ! APPLICATION STARTUP ! ! !");
 		return;
 	}
 
