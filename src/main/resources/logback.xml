@@ -1,0 +1,31 @@
+<configuration debug="false">
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+			<pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+			<!--<pattern>%-5level - %msg%n</pattern>-->
+		</encoder>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.base}/logs/nikos.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<!-- daily rollover. Make sure the path matches the one in the file element or else the rollover logs are placed in the working directory. -->
+		<fileNamePattern>nikos_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>5MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- levels are ordered as follows: TRACE < DEBUG < INFO <  WARN < ERROR. -->
+  	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+  	</root>
+</configuration>

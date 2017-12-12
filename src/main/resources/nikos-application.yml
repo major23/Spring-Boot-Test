@@ -1,0 +1,14 @@
+server.port: 8090
+
+info.version: ${project.version}
+
+configuration:
+   owner:
+      name: Nikos
+      lastName: Alexiou
+
+startUpOptions:
+   enableDatabaseOnStartUp: true
+   cleanUpDatabasesOnStartUp: true
+   enableLogging: true
+   httpTimeOut: 30000   
