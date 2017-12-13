@@ -73,6 +73,12 @@ public class DatabaseTopics {
 		database.executeUpdate(sql, dbType);
 	}
 
+	public void deleteTables() throws SQLException {
+		logger.info("Delete " + TABLE + " Table");
+		String sql = "Delete from " + TABLE;
+		database.executeUpdate(sql, dbType);
+	}
+
 	public int deleteTopic(String id) throws SQLException {
 		String sql = "DELETE from " + TABLE + " where " + ID + "='" + id + "'";
 		return database.executeUpdate(sql, dbType);
@@ -93,7 +99,14 @@ public class DatabaseTopics {
 			String sql = "INSERT INTO " + TABLE + " (" + getDataColumnstoString() + ") " +
 					"VALUES ('" + topic.getId() + "','" + topic.getName() + "','" + topic.getDescription() + "');";
 			database.executeUpdate(sql, dbType);
+		}
+	}
 
+	public void updateTopic(TopicDTO topic) throws SQLException {
+		if (configurationParamsDTO.getDatabaseEnabled()) {
+			String sql = "UPDATE " + TABLE + " SET " + NAME + "='" + topic.getName() + "'," + DESCRIPTION + "='" + topic.getDescription() + "'"
+					+ " WHERE " + ID + "=" + topic.getId();
+			database.executeUpdate(sql, dbType);
 		}
 	}
 
@@ -106,13 +119,22 @@ public class DatabaseTopics {
 		}
 	}
 
+	public TopicDTO selectById(Long id) throws SQLException {
+		String sql = "SELECT " + getDataColumnstoString() + " FROM " + TABLE + " WHERE " + ID + "='" + id + "'";
+		try {
+			return selectDB(sql).get(0);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
+	}
+
 	private List<TopicDTO> selectDB(String sql) throws SQLException {
 		List<TopicDTO> list = new ArrayList<TopicDTO>();
 		DatabaseDTO databaseDTO = database.executeQuery(sql, dbType);
 		try {
 			while (databaseDTO.getRs().next()) {
 				TopicDTO topic = new TopicDTO();
-				topic.setId(databaseDTO.getRs().getString(ID));
+				topic.setId(databaseDTO.getRs().getLong(ID));
 				topic.setName(databaseDTO.getRs().getString(NAME));
 				topic.setDescription(databaseDTO.getRs().getString(DESCRIPTION));
 				list.add(topic);

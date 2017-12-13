@@ -6,7 +6,6 @@ public class DatabaseConfigurationDTO {
 	private String dockerPath;
 	private String databaseConnection;
 	private String serverMode;
-	private String configuration;
 	private String topics;
 
 	public DatabaseConfigurationDTO() {
@@ -14,7 +13,6 @@ public class DatabaseConfigurationDTO {
 		dockerPath = path;
 		databaseConnection = "jdbc:h2:~";
 		serverMode = ";AUTO_SERVER=TRUE;MULTI_THREADED=TRUE";
-		configuration = "CONFIGURATION";
 		topics = "TOPICS";
 	}
 
@@ -32,10 +30,6 @@ public class DatabaseConfigurationDTO {
 
 	public String getServerMode() {
 		return serverMode;
-	}
-
-	public String getConfiguration() {
-		return configuration;
 	}
 
 	public String getTopics() {

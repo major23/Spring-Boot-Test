@@ -1,4 +1,4 @@
-package com.nikos.helper;
+package com.nikos.exceptions;
 
 public class SerializeException extends Exception{
 

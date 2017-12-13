@@ -43,8 +43,6 @@ public class Application extends SpringBootServletInitializer {
 
 	static String ownerName;
 	static String ownerLastName;
-	private static boolean cleanUpDatabasesOnStartUp;
-	private static boolean logEnabled = true;
 
 	// Database Names
 	private static DatabaseConfigurationDTO databaseConfigurationDTO = new DatabaseConfigurationDTO();
@@ -129,14 +127,8 @@ public class Application extends SpringBootServletInitializer {
 		if (totalCounters == null) {
 			totalCounters = new TotalCountersDTO();
 
-			totalCounters.setSuccessMTSMessages(new AtomicLong(0));
-			totalCounters.setTotalMTSMessages(new AtomicLong(0));
+			totalCounters.setTopicId(new AtomicLong(0));
 
-			totalCounters.setSuccessMTAMessages(new AtomicLong(0));
-			totalCounters.setTotalMTAMessages(new AtomicLong(0));
-
-			totalCounters.setSuccessMTACancelMessages(new AtomicLong(0));
-			totalCounters.setTotalMTACancelMessages(new AtomicLong(0));
 		}
 		return totalCounters;
 	}
@@ -162,24 +154,6 @@ public class Application extends SpringBootServletInitializer {
 		return restTemplate;
 	}
 
-	public static boolean getCleanUpDatabasesOnStartUp() {
-		return Application.cleanUpDatabasesOnStartUp;
-	}
-
-	@Value("${startUpOptions.cleanUpDatabasesOnStartUp}")
-	public void setCleanUpDatabasesOnStartUp(boolean override) {
-		Application.cleanUpDatabasesOnStartUp = override;
-	}
-
-	public static boolean getEnableLogOnStartUp() {
-		return Application.logEnabled;
-	}
-
-	@Value("${startUpOptions.enableLogging}")
-	public void setEnableLogOnStartUp(boolean override) {
-		Application.logEnabled = override;
-	}
-
 	public static String getOwnerName() {
 		return ownerName;
 	}
@@ -200,6 +174,26 @@ public class Application extends SpringBootServletInitializer {
 	@Value("${configuration.owner.lastName: Doe}")
 	public void setOwnerLastName(String lastName) {
 		Application.ownerLastName = lastName;
+	}
+
+	@Value("${startUpOptions.cleanUpDatabasesOnStartUp:true}")
+	private void setCleanUpDatabasesOnStartUp(Boolean override) {
+		configurationParamsDTO().setCleanUpDatabasesOnStartUp(override);
+	}
+
+	@Value("${startUpOptions.enableDatabaseOnStartUp:true}")
+	private void setEnableDatabaseOnStartUp(Boolean override) {
+		configurationParamsDTO().setDatabaseEnabled(override);
+	}
+
+	@Value("${startUpOptions.enableLogging:true}")
+	private void setEnableLogOnStartUp(Boolean override) {
+		configurationParamsDTO().setLogEnabled(override);
+	}
+
+	@Value("${startUpOptions.httpTimeOut:30000}")
+	private void setHttpTimeOut(Long httpTimeout) {
+		configurationParamsDTO().setHttptimeout(httpTimeout);
 	}
 
 	private static boolean fileExists(String filePathString) {

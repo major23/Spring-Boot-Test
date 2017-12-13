@@ -11,4 +11,8 @@ startUpOptions:
    enableDatabaseOnStartUp: true
    cleanUpDatabasesOnStartUp: true
    enableLogging: true
-   httpTimeOut: 30000   
+   httpTimeOut: 30000
+   
+threadpool:
+   corepoolsize: 2000
+   maxpoolsize: 4000
