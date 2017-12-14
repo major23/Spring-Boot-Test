@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nikos.Config;
@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiResponses;
 public class TopicController {
 
 	@Autowired
-	private TopicService topicService;
+	TopicService topicService;
 
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "<ol>"
@@ -49,12 +49,13 @@ public class TopicController {
 	})
 	@ApiOperation(value = "Get All Topics", tags = { "TopicsController" }, notes = "List all available Topics" + "<br/> <b>@return</b> List<TopicDTO>")
 	@RequestMapping(method = RequestMethod.GET, value = "/list")
-	public @ResponseBody List<TopicDTO> getAllTopics() {
+	public List<TopicDTO> getAllTopics() {
 		return topicService.getAllTopics();
 	}
 
 	@ApiOperation(value = "Get Topic", tags = { "TopicsController" })
-	@RequestMapping(method = RequestMethod.GET, value = "/list/{id}")
+	// @RequestMapping(method = RequestMethod.GET)
+	@GetMapping(value = "/list/{id}")
 	public TopicDTO get(@PathVariable("id") Long id) {
 		return topicService.getTopic(id);
 	}

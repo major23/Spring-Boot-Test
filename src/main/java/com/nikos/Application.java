@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.h2.tools.DeleteDbFiles;
@@ -24,6 +26,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +38,8 @@ import com.nikos.helper.DatabaseConfigurationDTO;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
-@SpringBootApplication
+@SpringBootApplication // same as @Configuration @EnableAutoConfiguration
+						// @ComponentScan
 public class Application extends SpringBootServletInitializer {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Application.class);
@@ -43,6 +47,7 @@ public class Application extends SpringBootServletInitializer {
 
 	static String ownerName;
 	static String ownerLastName;
+	private ThreadPoolTaskExecutor executor;
 
 	// Database Names
 	private static DatabaseConfigurationDTO databaseConfigurationDTO = new DatabaseConfigurationDTO();
@@ -64,9 +69,33 @@ public class Application extends SpringBootServletInitializer {
 		// declare this app as a Web app
 
 		new SpringApplicationBuilder(Application.class).properties(ImmutableMap.of("spring.config.name", CONFIG_NAME)).web(true).build().run(args);
-		logger.info("APPLICATION STARTED ! ! !");
 		logger.info("PROJECT OWNER: " + getOwnerName() + " " + getOwnerLastName());
 	}
+
+	@PostConstruct
+	public void laucnhComplete() {
+		logger.info("Dependency injection is done!");
+	}
+
+	@Bean(name = "threadExecutor")
+	public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+		executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(corePoolSize);
+		executor.setMaxPoolSize(maxPoolSize);
+		executor.setThreadNamePrefix("Executor_thread");
+		executor.setWaitForTasksToCompleteOnShutdown(true);
+		executor.initialize();
+		return executor;
+	}
+
+	@Value("${threadpool.corepoolsize:2000}")
+	private int corePoolSize;
+
+	@Value("${threadpool.maxpoolsize:4000}")
+	private int maxPoolSize;
+
+	@Value("${time-zone}")
+	private String timeZone;
 
 	@Bean
 	public TotalCountersDTO totalCounters() {
@@ -126,9 +155,7 @@ public class Application extends SpringBootServletInitializer {
 	private TotalCountersDTO getTotalCounters() {
 		if (totalCounters == null) {
 			totalCounters = new TotalCountersDTO();
-
 			totalCounters.setTopicId(new AtomicLong(0));
-
 		}
 		return totalCounters;
 	}

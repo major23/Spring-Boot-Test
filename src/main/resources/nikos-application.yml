@@ -16,3 +16,5 @@ startUpOptions:
 threadpool:
    corepoolsize: 2000
    maxpoolsize: 4000
+
+time-zone: Europe/Athens
