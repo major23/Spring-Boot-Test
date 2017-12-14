@@ -13,7 +13,7 @@ public interface TopicService {
 
 	public TopicDTO addTopic(TopicDTO topic) throws SQLException;
 
-	public TopicDTO updateTopic(TopicDTO topic) throws SQLException;
+	public TopicDTO updateTopic(TopicDTO topic);
 
 	public void deleteTopic(String id);
 

@@ -1,7 +1,6 @@
 package com.nikos.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -38,30 +37,8 @@ public class TopicController {
 	@Autowired
 	TopicService topicService;
 
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "<ol>"
-					+ "<li><span style='color:green'>Operation finished successfully</span></li>"
-					+ "</ol>"),
-			@ApiResponse(code = 400, message = "<ol>"
-					+ "<li><b>Reason:</b><span style='color:red'>Error reason1</span><br/><b>Message:</b><span style='color:blue'>Error message1</span></li>"
-					+ "<li><b>Reason:</b><span style='color:red'>Error reason2</span><br/><b>Message:</b><span style='color:blue'>Error message2</span></li>"
-					+ "</ol>")
-	})
-	@ApiOperation(value = "Get All Topics", tags = { "TopicsController" }, notes = "List all available Topics" + "<br/> <b>@return</b> List<TopicDTO>")
-	@RequestMapping(method = RequestMethod.GET, value = "/list")
-	public List<TopicDTO> getAllTopics() {
-		return topicService.getAllTopics();
-	}
-
-	@ApiOperation(value = "Get Topic", tags = { "TopicsController" })
-	// @RequestMapping(method = RequestMethod.GET)
-	@GetMapping(value = "/list/{id}")
-	public TopicDTO get(@PathVariable("id") Long id) {
-		return topicService.getTopic(id);
-	}
-
 	@ApiOperation(value = "Add new topic", tags = { "TopicsController" })
-	@RequestMapping(method = RequestMethod.POST, value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public TopicDTO add(@RequestBody TopicDTO topic) {
 		if (topic.getId() != null) {
 			throw new TopicValidationException("Inconsistent data. Cannot define auto-generated value.");
@@ -73,25 +50,41 @@ public class TopicController {
 		}
 	}
 
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "<ol>"
+					+ "<li><span style='color:green'>Operation finished successfully</span></li>"
+					+ "</ol>", response = TopicDTO.class),
+			@ApiResponse(code = 400, message = "<ol>"
+					+ "<li><b>Reason:</b><span style='color:red'>Error reason1</span><br/><b>Message:</b><span style='color:blue'>Error message1</span></li>"
+					+ "<li><b>Reason:</b><span style='color:red'>Error reason2</span><br/><b>Message:</b><span style='color:blue'>Error message2</span></li>"
+					+ "</ol>")
+	})
+	@ApiOperation(value = "Get All Topics", tags = { "TopicsController" }, notes = "List all available Topics" + "<br/> <b>@return</b> List<TopicDTO>")
+	@RequestMapping(method = RequestMethod.GET, value = "/list", produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
+	public List<TopicDTO> getAllTopics() {
+		return topicService.getAllTopics();
+	}
+
 	@ApiOperation(value = "Update topic", tags = { "TopicsController" })
-	@RequestMapping(method = RequestMethod.POST, value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public TopicDTO update(@RequestBody TopicDTO topic) {
 		if (topic.getId() == null) {
 			throw new TopicValidationException("Inconsistent data. No identifier provided.");
 		}
-		try {
-			return topicService.updateTopic(topic);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-
+		return topicService.updateTopic(topic);
 	}
 
 	@ApiOperation(value = "Delete topic", tags = { "TopicsController" })
 	@RequestMapping(method = RequestMethod.POST, value = "/delete/{id}")
 	public void delete(@PathVariable("id") String id) {
-		topicService.deleteTopic(id);
+		// topicService.deleteTopic(id);
+	}
+
+	@ApiOperation(value = "Get Topic", tags = { "TopicsController" })
+	// @RequestMapping(method = RequestMethod.GET)
+	@GetMapping(value = "/list/{id}")
+	public TopicDTO get(@PathVariable("id") Long id) {
+		return topicService.getTopic(id);
 	}
 
 	@ExceptionHandler(TopicNotFoundException.class)

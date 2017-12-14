@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.nikos.TotalCountersDTO;
 import com.nikos.dto.TopicDTO;
 import com.nikos.exceptions.TopicNotFoundException;
+import com.nikos.exceptions.TopicValidationException;
 import com.nikos.h2DB.DatabaseHelper;
 import com.nikos.helper.ConfigurationParamsDTO;
 
@@ -26,13 +27,12 @@ public class TopicServiceImpl implements TopicService {
 	private TotalCountersDTO totalCountersDTO;
 
 	public List<TopicDTO> getAllTopics() {
-		DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
 		try {
+			DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
 			return database.getDatabaseTopics().selectAll();
 		} catch (SQLException e) {
 			LOGGER.error("Fail to get DB results");
-			e.printStackTrace();
-			return null;
+			throw new TopicNotFoundException("Could not get Topics");
 		}
 	}
 
@@ -47,20 +47,29 @@ public class TopicServiceImpl implements TopicService {
 		}
 	}
 
-	public TopicDTO addTopic(TopicDTO topic) throws SQLException {
-		DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
-		topic.setId(totalCountersDTO.getTopicId().incrementAndGet());
-		database.getDatabaseTopics().insertTopic(topic);
-		return topic;
+	public TopicDTO addTopic(TopicDTO topic) {
+		try {
+			DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
+			topic.setId(totalCountersDTO.getTopicId().incrementAndGet());
+			database.getDatabaseTopics().insertTopic(topic);
+			return topic;
+		} catch (SQLException sqle) {
+			throw new TopicValidationException("Could not add Topic");
+		}
+
 	}
 
-	public TopicDTO updateTopic(TopicDTO topic) throws SQLException {
-		DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
-		if (database.getDatabaseTopics().selectById(topic.getId()) == null) {
-			throw new TopicNotFoundException("Topic with id: " + topic.getId() + " not found");
+	public TopicDTO updateTopic(TopicDTO topic) {
+		try {
+			DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
+			if (database.getDatabaseTopics().selectById(topic.getId()) == null) {
+				throw new TopicNotFoundException("Topic with id: " + topic.getId() + " not found");
+			}
+			database.getDatabaseTopics().updateTopic(topic);
+			return topic;
+		} catch (SQLException sqle) {
+			throw new TopicValidationException("Could not update Topic");
 		}
-		database.getDatabaseTopics().updateTopic(topic);
-		return topic;
 	}
 
 	public void deleteTopic(String id) {
