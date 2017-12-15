@@ -1,10 +1,17 @@
 package com.nikos.dto;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.io.Serializable;
 
-@JsonPropertyOrder({ "name", "lastName" })
-public class UserDTO {
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
+public class UserDTO implements Serializable {
+
+	private static final long serialVersionUID = 1157474042893983133L;
+
+	@Id
+	private Long id;
 	private String name;
 	private String lastName;
 
@@ -12,14 +19,24 @@ public class UserDTO {
 
 	}
 
-	public UserDTO(String name, String lastName) {
+	public UserDTO(Long id, String name, String lastName) {
+		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
 	}
 
 	public UserDTO(UserDTO user) {
+		this.id = user.getId();
 		this.name = user.getName();
 		this.lastName = user.getLastName();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nikos.Config;
 import com.nikos.dto.TopicDTO;
-import com.nikos.exceptions.TopicNotFoundException;
-import com.nikos.exceptions.TopicValidationException;
+import com.nikos.exceptions.NotFoundException;
+import com.nikos.exceptions.ValidationException;
 import com.nikos.helper.MediaTypeConstants;
 import com.nikos.helper.Response;
 import com.nikos.services.TopicService;
@@ -41,12 +41,12 @@ public class TopicController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public TopicDTO add(@RequestBody TopicDTO topic) {
 		if (topic.getId() != null) {
-			throw new TopicValidationException("Inconsistent data. Cannot define auto-generated value.");
+			throw new ValidationException("Inconsistent data. Cannot define auto-generated value.");
 		}
 		try {
 			return topicService.addTopic(topic);
 		} catch (Exception e) {
-			throw new TopicValidationException("Could not add topic");
+			throw new ValidationException("Could not add topic");
 		}
 	}
 
@@ -69,7 +69,7 @@ public class TopicController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public TopicDTO update(@RequestBody TopicDTO topic) {
 		if (topic.getId() == null) {
-			throw new TopicValidationException("Inconsistent data. No identifier provided.");
+			throw new ValidationException("Inconsistent data. No identifier provided.");
 		}
 		return topicService.updateTopic(topic);
 	}
@@ -87,12 +87,12 @@ public class TopicController {
 		return topicService.getTopic(id);
 	}
 
-	@ExceptionHandler(TopicNotFoundException.class)
+	@ExceptionHandler(NotFoundException.class)
 	public Response notFound(Exception e, HttpServletResponse response) throws IOException {
 		return new Response(HttpStatus.NOT_FOUND.value(), e.getMessage());
 	}
 
-	@ExceptionHandler(TopicValidationException.class)
+	@ExceptionHandler(ValidationException.class)
 	public Response invalid(Exception e, HttpServletResponse response) throws IOException {
 		return new Response(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 	}

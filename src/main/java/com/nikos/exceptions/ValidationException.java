@@ -1,10 +1,10 @@
 package com.nikos.exceptions;
 
-public class TopicValidationException extends RuntimeException {
+public class ValidationException extends RuntimeException {
 
 	private static final long serialVersionUID = 7278573120329585925L;
 
-	public TopicValidationException(String message) {
+	public ValidationException(String message) {
 		super(message);
 	}
 

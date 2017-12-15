@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.nikos.TotalCountersDTO;
 import com.nikos.dto.TopicDTO;
-import com.nikos.exceptions.TopicNotFoundException;
-import com.nikos.exceptions.TopicValidationException;
+import com.nikos.exceptions.NotFoundException;
+import com.nikos.exceptions.ValidationException;
 import com.nikos.h2DB.DatabaseHelper;
 import com.nikos.helper.ConfigurationParamsDTO;
 
@@ -32,7 +32,7 @@ public class TopicServiceImpl implements TopicService {
 			return database.getDatabaseTopics().selectAll();
 		} catch (SQLException e) {
 			LOGGER.error("Fail to get DB results");
-			throw new TopicNotFoundException("Could not get Topics");
+			throw new NotFoundException("Could not get Topics");
 		}
 	}
 
@@ -54,7 +54,7 @@ public class TopicServiceImpl implements TopicService {
 			database.getDatabaseTopics().insertTopic(topic);
 			return topic;
 		} catch (SQLException sqle) {
-			throw new TopicValidationException("Could not add Topic");
+			throw new ValidationException("Could not add Topic");
 		}
 
 	}
@@ -63,12 +63,12 @@ public class TopicServiceImpl implements TopicService {
 		try {
 			DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
 			if (database.getDatabaseTopics().selectById(topic.getId()) == null) {
-				throw new TopicNotFoundException("Topic with id: " + topic.getId() + " not found");
+				throw new NotFoundException("Topic with id: " + topic.getId() + " not found");
 			}
 			database.getDatabaseTopics().updateTopic(topic);
 			return topic;
 		} catch (SQLException sqle) {
-			throw new TopicValidationException("Could not update Topic");
+			throw new ValidationException("Could not update Topic");
 		}
 	}
 
@@ -76,11 +76,11 @@ public class TopicServiceImpl implements TopicService {
 		try {
 			DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
 			if (database.getDatabaseTopics().selectById(id) == null) {
-				throw new TopicNotFoundException("Topic with id: " + id + " not found");
+				throw new NotFoundException("Topic with id: " + id + " not found");
 			}
 			database.getDatabaseTopics().deleteTopic(id);
 		} catch (SQLException sqle) {
-			throw new TopicValidationException("Could not delete Topic");
+			throw new ValidationException("Could not delete Topic");
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TotalCountersDTO {
 
 	private AtomicLong topicId;
+	private AtomicLong userId;
 
 	public TotalCountersDTO() {
 
@@ -16,6 +17,14 @@ public class TotalCountersDTO {
 
 	public void setTopicId(AtomicLong topicId) {
 		this.topicId = topicId;
+	}
+
+	public AtomicLong getUserId() {
+		return userId;
+	}
+
+	public void setUserId(AtomicLong userId) {
+		this.userId = userId;
 	}
 
 }
