@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nikos.Config;
-import com.nikos.Greeting;
 import com.nikos.dto.UserDTO;
 import com.nikos.exceptions.NotFoundException;
 import com.nikos.exceptions.ValidationException;
-import com.nikos.helper.ApiVersion;
 import com.nikos.helper.Response;
 import com.nikos.services.UserService;
 
@@ -53,42 +50,11 @@ public class UsersController {
 
 	@ApiOperation(value = "Add user", tags = { "UsersController" })
 	@PostMapping(value = "/add")
-	public void addUser(@RequestBody UserDTO user) {
+	public UserDTO addUser(@RequestBody UserDTO user) {
 		if (user.getId() != null) {
 			throw new ValidationException("Inconsistent data. Cannot define auto-generated value.");
 		}
-		userService.addUser(user);
-	}
-
-	@ApiOperation(value = "Import User", tags = { "UsersController" })
-	@RequestMapping(value = "/importUser", method = RequestMethod.POST)
-	public ResponseEntity<UserDTO> importUserRequest(@RequestBody UserDTO user, @RequestParam(value = "pass") boolean pass) {
-		if (pass) {
-			logger.info(user + " imported successfully");
-			return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
-		}
-		logger.error("Failed to import user " + user);
-		return new ResponseEntity<UserDTO>(new UserDTO(), HttpStatus.BAD_REQUEST);
-	}
-
-	@ApiVersion(from = "2.12")
-	@ApiOperation(value = "Home API", tags = { "UsersController" })
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home() {
-		return "Welcome controller1";
-	}
-
-	@ApiOperation(value = "Greeting API", tags = { "UsersController" })
-	@RequestMapping(value = "/greeting1", method = RequestMethod.GET)
-	public Greeting greeting(@RequestParam(value = "msg") String message,
-			@RequestParam(value = "name", defaultValue = "User") String name) {
-		return new Greeting(message, name);
-	}
-
-	@ApiOperation(value = "Exit API", tags = { "UsersController" })
-	@RequestMapping(value = "/exit1", method = RequestMethod.GET)
-	public String exit(@RequestParam(value = "name", defaultValue = "User") String name) {
-		return "GoodBye " + name;
+		return userService.addUser(user);
 	}
 
 	@ApiOperation(value = "Test path variable", tags = { "UsersController" })

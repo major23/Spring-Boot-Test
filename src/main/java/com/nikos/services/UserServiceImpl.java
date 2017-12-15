@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.nikos.TotalCountersDTO;
 import com.nikos.dto.UserDTO;
+import com.nikos.exceptions.ValidationException;
 import com.nikos.repositories.UserRepository;
 
 @Component
@@ -30,9 +32,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void addUser(UserDTO user) {
-		user.setId(totalCounters.getTopicId().incrementAndGet());
-		userRepository.save(user);
+	public UserDTO addUser(UserDTO user) {
+		try {
+			return userRepository.save(user);
+		} catch (DataIntegrityViolationException e) {
+			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
+		}
+
 	}
 
 }

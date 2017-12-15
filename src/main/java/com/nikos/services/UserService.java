@@ -8,6 +8,6 @@ public interface UserService {
 
 	public List<UserDTO> getAllUsers();
 
-	public void addUser(UserDTO user);
+	public UserDTO addUser(UserDTO user);
 
 }
