@@ -156,6 +156,7 @@ public class Application extends SpringBootServletInitializer {
 		if (totalCounters == null) {
 			totalCounters = new TotalCountersDTO();
 			totalCounters.setTopicId(new AtomicLong(0));
+			totalCounters.setUserId(new AtomicLong(0));
 		}
 		return totalCounters;
 	}
