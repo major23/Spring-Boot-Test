@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.nikos.Config;
 import com.nikos.dto.UserDTO;
 import com.nikos.exceptions.NotFoundException;
 import com.nikos.exceptions.ValidationException;
+import com.nikos.helper.MediaTypeConstants;
 import com.nikos.helper.Response;
 import com.nikos.services.UserService;
 
@@ -43,13 +45,13 @@ public class UsersController {
 	UserService userService;
 
 	@ApiOperation(value = "List Users", tags = { "UsersController" })
-	@GetMapping(value = "/list")
+	@GetMapping(value = "/list", produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public List<UserDTO> listUsers() {
 		return userService.getAllUsers();
 	}
 
 	@ApiOperation(value = "Add user", tags = { "UsersController" })
-	@PostMapping(value = "/add")
+	@PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public UserDTO addUser(@RequestBody UserDTO user) {
 		if (user.getId() != null) {
 			throw new ValidationException("Inconsistent data. Cannot define auto-generated value.");

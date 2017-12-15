@@ -82,7 +82,7 @@ public class TopicController {
 
 	@ApiOperation(value = "Get Topic", tags = { "TopicsController" })
 	// @RequestMapping(method = RequestMethod.GET)
-	@GetMapping(value = "/list/{id}")
+	@GetMapping(value = "/list/{id}", produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
 	public TopicDTO get(@PathVariable("id") Long id) {
 		return topicService.getTopic(id);
 	}
