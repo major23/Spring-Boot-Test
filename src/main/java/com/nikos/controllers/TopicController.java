@@ -76,8 +76,8 @@ public class TopicController {
 
 	@ApiOperation(value = "Delete topic", tags = { "TopicsController" })
 	@RequestMapping(method = RequestMethod.POST, value = "/delete/{id}")
-	public void delete(@PathVariable("id") String id) {
-		// topicService.deleteTopic(id);
+	public void delete(@PathVariable("id") Long id) {
+		topicService.deleteTopic(id);
 	}
 
 	@ApiOperation(value = "Get Topic", tags = { "TopicsController" })

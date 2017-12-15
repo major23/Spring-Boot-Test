@@ -79,7 +79,7 @@ public class DatabaseTopics {
 		database.executeUpdate(sql, dbType);
 	}
 
-	public int deleteTopic(String id) throws SQLException {
+	public int deleteTopic(Long id) throws SQLException {
 		String sql = "DELETE from " + TABLE + " where " + ID + "='" + id + "'";
 		return database.executeUpdate(sql, dbType);
 	}

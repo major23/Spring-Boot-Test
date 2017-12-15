@@ -72,13 +72,16 @@ public class TopicServiceImpl implements TopicService {
 		}
 	}
 
-	public void deleteTopic(String id) {
-		// for (TopicDTO t : topics) {
-		// if (t.getId().equalsIgnoreCase(id)) {
-		// topics.remove(t);
-		// return;
-		// }
-		// }
+	public void deleteTopic(Long id) {
+		try {
+			DatabaseHelper database = new DatabaseHelper(configurationParamsDTO);
+			if (database.getDatabaseTopics().selectById(id) == null) {
+				throw new TopicNotFoundException("Topic with id: " + id + " not found");
+			}
+			database.getDatabaseTopics().deleteTopic(id);
+		} catch (SQLException sqle) {
+			throw new TopicValidationException("Could not delete Topic");
+		}
 	}
 
 }
