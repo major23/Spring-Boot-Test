@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,10 +58,26 @@ public class UsersController {
 		return userService.addUser(user);
 	}
 
-	@ApiOperation(value = "Test path variable", tags = { "UsersController" })
-	@RequestMapping(value = "/{user}", method = RequestMethod.GET)
-	public String getUser(@PathVariable("user") Long a, @RequestParam(value = "message", defaultValue = "Hi") String msg) {
-		return msg + " user no." + a;
+	@ApiOperation(value = "List One User", tags = { "UsersController" })
+	@GetMapping(value = "/list/{id}", produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
+	public UserDTO listUser(@PathVariable("id") Long id) {
+		return userService.getUser(id);
+	}
+
+	@ApiOperation(value = "Update User", tags = { "UsersController" })
+	@PostMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
+	public UserDTO updateUser(@RequestBody UserDTO user) {
+		if (user.getId() == null) {
+			throw new ValidationException("Inconsistent data. Id value required");
+		}
+		return userService.updateUser(user);
+	}
+
+	@ApiOperation(value = "Delete User", tags = { "UsersController" })
+	@PostMapping(value = "/delete")
+	public void deleteUser(@RequestParam Long id) {
+		userService.deleteUser(id);
+
 	}
 
 	@ExceptionHandler(NotFoundException.class)

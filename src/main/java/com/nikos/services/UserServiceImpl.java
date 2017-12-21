@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.nikos.TotalCountersDTO;
 import com.nikos.dto.UserDTO;
+import com.nikos.exceptions.NotFoundException;
 import com.nikos.exceptions.ValidationException;
 import com.nikos.repositories.UserRepository;
 
@@ -32,6 +33,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public UserDTO getUser(Long id) {
+		return userRepository.findOne(id);
+	}
+
+	@Override
 	public UserDTO addUser(UserDTO user) {
 		try {
 			return userRepository.save(user);
@@ -39,6 +45,29 @@ public class UserServiceImpl implements UserService {
 			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
 		}
 
+	}
+
+	@Override
+	public UserDTO updateUser(UserDTO user) {
+		UserDTO u = userRepository.findOne(user.getId());
+		if (u == null) {
+			throw new NotFoundException("User with id: " + user.getId() + " not found");
+		}
+		try {
+			return userRepository.save(user);
+		} catch (DataIntegrityViolationException e) {
+			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
+		}
+
+	}
+
+	@Override
+	public void deleteUser(Long id) {
+		UserDTO u = userRepository.findOne(id);
+		if (u == null) {
+			throw new NotFoundException("User with id: " + id + " not found");
+		}
+		userRepository.delete(id);
 	}
 
 }
