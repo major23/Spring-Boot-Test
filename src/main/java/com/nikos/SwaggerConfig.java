@@ -32,7 +32,10 @@ public class SwaggerConfig {
 				.directModelSubstitute(ZonedDateTime.class, String.class)
 				.apiInfo(apiInfo())
 				.select()
-				.paths(regex(".*(" + Config.USERS_CONTROLLER_PREFIX + "|" + Config.TOPICS_CONTROLLER_PREFIX + ").*"))
+				.paths(regex(".*(" +
+						Config.USERS_CONTROLLER_PREFIX + "|" +
+						Config.TOPICS_CONTROLLER_PREFIX + "|" +
+						Config.JOBS_CONTROLLER_PREFIX + ").*"))
 				.build();
 	}
 
