@@ -1,44 +1,32 @@
 package com.nikos.dto;
 
-import java.io.Serializable;
+import com.nikos.entities.UserEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class UserDTO implements BaseManagementDTO<UserEntity, Long> {
 
-@Entity
-@Table(name = "USERS")
-public class UserDTO implements Serializable {
+	private static final long serialVersionUID = 6379096485594109832L;
 
-	private static final long serialVersionUID = 1157474042893983133L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(name = "NAME", nullable = false)
 	private String name;
-
-	@Column(name = "SURNAME", nullable = false)
 	private String lastName;
+	private Long jobId;
 
 	public UserDTO() {
 
 	}
 
-	public UserDTO(Long id, String name, String lastName) {
+	public UserDTO(Long id, String name, String lastName, Long jobId) {
 		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
+		this.jobId = jobId;
 	}
 
 	public UserDTO(UserDTO user) {
 		this.id = user.getId();
 		this.name = user.getName();
 		this.lastName = user.getLastName();
+		this.jobId = user.getJobId();
 	}
 
 	public Long getId() {
@@ -63,6 +51,26 @@ public class UserDTO implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public Long getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(Long jobId) {
+		this.jobId = jobId;
+	}
+
+	public UserEntity toEntity() {
+		return new UserEntity(this.getId(), this.getName(), this.getLastName());
+	}
+
+	public UserDTO fromEntity(UserEntity entity) {
+		this.id = entity.getId();
+		this.name = entity.getName();
+		this.lastName = entity.getLastName();
+		this.jobId = entity.getJob().getId();
+		return this;
 	}
 
 }

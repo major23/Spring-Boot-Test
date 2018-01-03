@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.nikos.TotalCountersDTO;
 import com.nikos.dto.UserDTO;
+import com.nikos.entities.JobEntity;
+import com.nikos.entities.UserEntity;
 import com.nikos.exceptions.NotFoundException;
-import com.nikos.exceptions.ValidationException;
+import com.nikos.repositories.JobRepository;
 import com.nikos.repositories.UserRepository;
 
 @Component
@@ -20,50 +21,59 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private JobRepository jobRepository;
+
+	@Autowired
 	TotalCountersDTO totalCounters;
 
 	@Override
 	public List<UserDTO> getAllUsers() {
 		List<UserDTO> userList = new ArrayList<>();
-		Iterable<UserDTO> list = userRepository.findAll();
-		for (UserDTO u : list) {
-			userList.add(u);
+		Iterable<UserEntity> list = userRepository.findAll();
+		for (UserEntity u : list) {
+			userList.add(new UserDTO().fromEntity(u));
 		}
 		return userList;
 	}
 
 	@Override
 	public UserDTO getUser(Long id) {
-		return userRepository.findOne(id);
+		return new UserDTO().fromEntity(userRepository.findOne(id));
 	}
 
 	@Override
 	public UserDTO addUser(UserDTO user) {
-		try {
-			return userRepository.save(user);
-		} catch (DataIntegrityViolationException e) {
-			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
+		UserEntity userEnt = user.toEntity();
+		JobEntity jobEnt = jobRepository.findOne(user.getJobId());
+
+		if (jobEnt == null) {
+			throw new NotFoundException("Job with id: " + user.getJobId() + " not found");
 		}
 
+		userEnt.setJob(jobEnt);
+		return new UserDTO().fromEntity(userRepository.save(userEnt));
 	}
 
 	@Override
 	public UserDTO updateUser(UserDTO user) {
-		UserDTO u = userRepository.findOne(user.getId());
-		if (u == null) {
+		UserEntity userEntity = userRepository.findOne(user.getId());
+		if (userEntity == null) {
 			throw new NotFoundException("User with id: " + user.getId() + " not found");
 		}
-		try {
-			return userRepository.save(user);
-		} catch (DataIntegrityViolationException e) {
-			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
+
+		UserEntity updUser = user.toEntity();
+		JobEntity jobEnt = jobRepository.findOne(user.getJobId());
+		if (jobEnt == null) {
+			throw new NotFoundException("Job with id: " + user.getJobId() + " not found");
 		}
 
+		updUser.setJob(jobEnt);
+		return new UserDTO().fromEntity(userRepository.save(updUser));
 	}
 
 	@Override
 	public void deleteUser(Long id) {
-		UserDTO u = userRepository.findOne(id);
+		UserEntity u = userRepository.findOne(id);
 		if (u == null) {
 			throw new NotFoundException("User with id: " + id + " not found");
 		}

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.nikos.TotalCountersDTO;
 import com.nikos.dto.JobDTO;
+import com.nikos.entities.JobEntity;
 import com.nikos.exceptions.NotFoundException;
 import com.nikos.exceptions.ValidationException;
 import com.nikos.repositories.JobRepository;
@@ -25,22 +26,22 @@ public class JobServiceImpl implements JobService {
 	@Override
 	public List<JobDTO> getAll() {
 		List<JobDTO> jobList = new ArrayList<>();
-		Iterable<JobDTO> list = jobRepository.findAll();
-		for (JobDTO obj : list) {
-			jobList.add(obj);
+		Iterable<JobEntity> list = jobRepository.findAll();
+		for (JobEntity entity : list) {
+			jobList.add(new JobDTO().fromEntity(entity));
 		}
 		return jobList;
 	}
 
 	@Override
 	public JobDTO get(Long id) {
-		return jobRepository.findOne(id);
+		return new JobDTO().fromEntity(jobRepository.findOne(id));
 	}
 
 	@Override
 	public JobDTO add(JobDTO job) {
 		try {
-			return jobRepository.save(job);
+			return new JobDTO().fromEntity(jobRepository.save(job.toEntity()));
 		} catch (DataIntegrityViolationException e) {
 			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
 		}
@@ -49,12 +50,12 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public JobDTO update(JobDTO job) {
-		JobDTO obj = jobRepository.findOne(job.getId());
-		if (obj == null) {
+		JobEntity entity = jobRepository.findOne(job.getId());
+		if (entity == null) {
 			throw new NotFoundException("Job with id: " + job.getId() + " not found");
 		}
 		try {
-			return jobRepository.save(job);
+			return new JobDTO().fromEntity(jobRepository.save(job.toEntity()));
 		} catch (DataIntegrityViolationException e) {
 			throw new ValidationException("Constraint Violation: " + e.getMostSpecificCause().getMessage());
 		}
@@ -63,8 +64,8 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public void delete(Long id) {
-		JobDTO obj = jobRepository.findOne(id);
-		if (obj == null) {
+		JobEntity entity = jobRepository.findOne(id);
+		if (entity == null) {
 			throw new NotFoundException("Job with id: " + id + " not found");
 		}
 		jobRepository.delete(id);

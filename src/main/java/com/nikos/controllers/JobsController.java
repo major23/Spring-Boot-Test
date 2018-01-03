@@ -51,7 +51,7 @@ public class JobsController {
 
 	@ApiOperation(value = "Add Job", tags = { "JobsController" })
 	@PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypeConstants.APPLICATION_JSON_UTF8_VALUE)
-	public JobDTO addUser(@RequestBody JobDTO job) {
+	public JobDTO addJob(@RequestBody JobDTO job) {
 		if (job.getId() != null) {
 			throw new ValidationException("Inconsistent data. Cannot define auto-generated value.");
 		}
