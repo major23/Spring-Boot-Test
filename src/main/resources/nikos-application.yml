@@ -18,3 +18,12 @@ threadpool:
    maxpoolsize: 4000
 
 time-zone: Europe/Athens
+
+randomValues:
+    password: ${random.value}
+    intValue: ${random.int}
+    intValueRange: ${random.int[1,99]}
+    intUpperLimit: ${random.int(10)}
+    longValue: ${random.long}
+    longValueRange: ${random.long[111111111111,999999999999]}
+    uuid: ${random.uuid}

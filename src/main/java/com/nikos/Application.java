@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +15,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.h2.tools.DeleteDbFiles;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -67,14 +69,47 @@ public class Application extends SpringBootServletInitializer {
 	public static void main(String[] args) throws Exception {
 		// Here we state the YML config file for properties and explicitly
 		// declare this app as a Web app
+		SpringApplication app = new SpringApplicationBuilder(Application.class).properties(ImmutableMap.of("spring.config.name", CONFIG_NAME)).web(true)
+				.build();
+		// app.setBannerMode(Banner.Mode.OFF);
+		app.run(args);
 
-		new SpringApplicationBuilder(Application.class).properties(ImmutableMap.of("spring.config.name", CONFIG_NAME)).web(true).build().run(args);
 		logger.info("PROJECT OWNER: " + getOwnerName() + " " + getOwnerLastName());
 	}
+
+	@Value("${randomValues.password}")
+	private String password;
+
+	@Value("${randomValues.intValue}")
+	private Integer intValue;
+
+	@Value("${randomValues.intValueRange}")
+	private Integer intValueRange;
+
+	@Value("${randomValues.longValue}")
+	private Long longValue;
+
+	@Value("${randomValues.longValueRange}")
+	private Long longValueRange;
+
+	@Value("${randomValues.uuid}")
+	private UUID uuid;
+
+	@Value("${randomValues.intUpperLimit}")
+	private Integer intUpperLimit;
 
 	@PostConstruct
 	public void laucnhComplete() {
 		logger.info("Dependency injection is done!");
+
+		logger.info("Configure Random Property Values using Spring Boot");
+		logger.info("password: " + password);
+		logger.info("intValue: " + intValue);
+		logger.info("intValue: " + intUpperLimit);
+		logger.info("intValueRange: " + intValueRange);
+		logger.info("longValue: " + longValue);
+		logger.info("longValueRange: " + longValueRange);
+		logger.info("uuid: " + uuid);
 	}
 
 	@Bean(name = "threadExecutor")
@@ -94,7 +129,7 @@ public class Application extends SpringBootServletInitializer {
 	@Value("${threadpool.maxpoolsize:4000}")
 	private int maxPoolSize;
 
-	@Value("${time-zone}")
+	@Value("${time-zone:UTC}")
 	private String timeZone;
 
 	@Bean
@@ -191,7 +226,7 @@ public class Application extends SpringBootServletInitializer {
 	// If present but empty then it will be empty e.g.""
 	@Value("${configuration.owner.name:John}")
 	public void setOwnerName(String name) {
-		Application.ownerName = name;
+		ownerName = name;
 	}
 
 	public static String getOwnerLastName() {
@@ -201,7 +236,7 @@ public class Application extends SpringBootServletInitializer {
 	// passing default value Doe
 	@Value("${configuration.owner.lastName: Doe}")
 	public void setOwnerLastName(String lastName) {
-		Application.ownerLastName = lastName;
+		ownerLastName = lastName;
 	}
 
 	@Value("${startUpOptions.cleanUpDatabasesOnStartUp:true}")
