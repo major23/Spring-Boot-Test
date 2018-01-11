@@ -28,4 +28,13 @@
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
   	</root>
+  	
+  	
+  	
+  	<!-- Applies included properties based on the matching pspring profile enabled -->
+<!--   	<springProfile name="dev"> -->
+<!-- 		<root level="DEBUG"></root> -->
+<!-- 	</springProfile> -->
+  	
+  	
 </configuration>
