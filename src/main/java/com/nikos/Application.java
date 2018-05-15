@@ -69,11 +69,8 @@ public class Application extends SpringBootServletInitializer {
 	public static void main(String[] args) throws Exception {
 		// Here we state the YML config file for properties and explicitly
 		// declare this app as a Web app
-		SpringApplication app = new SpringApplicationBuilder(Application.class).properties(ImmutableMap.of("spring.config.name", CONFIG_NAME)).web(true)
-				.build();
+		new SpringApplicationBuilder(Application.class).properties(ImmutableMap.of("spring.config.name", CONFIG_NAME)).web(true).build().run(args);
 		// app.setBannerMode(Banner.Mode.OFF);
-		app.run(args);
-
 		logger.info("PROJECT OWNER: " + getOwnerName() + " " + getOwnerLastName());
 	}
 
