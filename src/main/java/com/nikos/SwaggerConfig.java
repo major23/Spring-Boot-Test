@@ -44,7 +44,7 @@ public class SwaggerConfig {
 				.title("Nikos Test Swagger")
 				.description("Swagger decription")
 				.termsOfServiceUrl("Terms Of Service")
-				.contact(new Contact("nikos", "http://www.nikos.com", "nikos@gmail.com"))
+				.contact(new Contact(Application.getOwnerName() + " " + Application.getOwnerLastName(), "http://www.nikos.com", "nikos@gmail.com"))
 				.license("Licence Title")
 				.licenseUrl("https://www.google.com")
 				.version("1.0")
