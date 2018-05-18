@@ -1,0 +1,8 @@
+test1:
+  image: test1
+  hostname: springBootTest
+  ports:
+    - "8080:8080"
+  volumes:
+     - /home/nikos/dockerFiles/logs:/usr/local/tomcat/logs/springBootTest/
+     - /home/nikos/dockerFiles/config-overrides:/usr/local/tomcat/config-overrides/
